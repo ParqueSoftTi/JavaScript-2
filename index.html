@@ -1,0 +1,324 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Codelab: Como crear tu primera API con Node, Express y Mongo</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="node-express-mongo"
+                  title="Codelab: Como crear tu primera API con Node, Express y Mongo"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Objetivo" duration="0">
+        <p>En este codelab, aprenderás a configurar todo lo necesario para crear una API utilizando Node.js, Express.js y MongoDB. Crearemos endpoints para que puedas hacer tu primer CRUD.</p>
+<p class="image-container"><img alt="node-express-mongo" src="img\\6b5cb9bd6a783ffc.jpg"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bloque 1 - Node.js" duration="15">
+        <p>Para poder desarrollar un servidor de node, necesitamos instalarlo, esto lo podemos hacer desde el siguiente enlace <a href="https://nodejs.org/en/" target="_blank">node.js</a>.</p>
+<p class="image-container"><img alt="download-node" src="img\\54b3cfef9fa0fb8c.png"></p>
+<p>Una vez instalado, creamos una nueva carpeta para nuestro proyecto y la abrimos con VS code. Aquí debemos abrir una nueva terminal, esto podemos hacerlo en el menú, <code>terminal</code> - <code>new terminal</code> o presionando en el teclado <code>Ctrl+Shift+ñ</code>, como podemos verlo en la siguiente imagen:</p>
+<p class="image-container"><img alt="download-node" src="img\\b5b09b2fa42bce9a.png"></p>
+<h2 is-upgraded>Iniciar un nuevo proyecto de Node.js</h2>
+<p>Para iniciar un nuevo proyecto de node debemos ejecutar el siguientes comando de <code>npm</code> en el terminal que acabamos de abrir</p>
+<ul>
+<li><code>npm init -y</code> para inicializar un nuevo proyecto por defecto de node.</li>
+</ul>
+<p><code>npm</code> es el manejador de paquetes que viene por defecto cuando instalamos node, así que al realizar la instalación de node podemos utilizarlo sin problemas.</p>
+<p>Si creamos un nuevo proyecto con los valores por defecto (omitiendo el asistente) con el comando <code>npm init -y</code>, se generará un archivo llamado <code>package.json</code> en la carpeta raíz del proyecto, donde coloca toda la información que se conoce sobre el proyecto:</p>
+<pre><code language="language-bash" class="language-bash">{
+  &#34;name&#34;: &#34;nombre del proyecto&#34;,
+  &#34;version&#34;: &#34;1.0.0&#34;,
+  &#34;description&#34;: &#34;&#34;,
+  &#34;main&#34;: &#34;index.js&#34;,
+  &#34;scripts&#34;: {
+    &#34;test&#34;: &#34;echo \&#34;Error: no test specified\&#34; &amp;&amp; exit 1&#34;
+  },
+  &#34;keywords&#34;: [],
+  &#34;author&#34;: &#34;&#34;,
+  &#34;license&#34;: &#34;ISC&#34;
+}
+</code></pre>
+<p>Esta información se irá modificando a medida que avancemos en el proyecto. Con esto ya tenemos instalado Node.js e iniciado una nueva aplicación.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bloque 2 - MongoDB Atlas" duration="20">
+        <p>Para desarrollar nuestra API vamos a necesitar una base de datos, asi que antes de comenzar con nuestro código, configuraremos MongoDB Atlas. MongoDB Atlas es un servicio de pago, pero entre sus planes nos ofrece un plan compartido que es totalmente gratuito y que nos ofrece todo lo necesario para que podamos comenzar a usar una base de datos de MongoDB de inmediato.</p>
+<h2 is-upgraded>Registro en MongoDB Atlas</h2>
+<p>Para realizar el registro podemos ir al siguiente enlace <a href="https://www.mongodb.com/es/cloud/atlas/register" target="_blank">mongoDB Atlas</a>.</p>
+<h2 is-upgraded>Creación de un Cluster gratuito</h2>
+<p>Una vez registrados vamos a necesitar una URI para realizar la conexión desde nuestro código con MongoDB Atlas, cuanto te registras MongoDB Atlas crea un proyecto por defecto, en este proyecto creamos un nuevo cluster, un cluster es un conjunto de servidores que trabajan juntos para almacenar y administrar los datos de tu base de datos MongoDB, aquí vamos a seleccionar la versión gratuita y el proveedor, que en este caso sugiero AWS.</p>
+<p class="image-container"><img alt="mongoAtlas-registro" src="img\\999ddd21610a9ad3.png"></p>
+<h2 is-upgraded>Obtener la URI de conexión</h2>
+<p>Una vez finalizado el registro tendremos un cluster inicial llamado <code>Cluster0</code> que podremos usar de forma gratuita. Ahora vamos a necesitar una URI para realizar la conexión desde nuestra API de node. Para esto vamos a la opción que dice <code>Connect</code> en nuestro cluster</p>
+<p class="image-container"><img alt="connect-cluster" src="img\\c629453e2af421b0.png"></p>
+<p>Aquí nos pedirá crear un usuario y una contraseña para la conexión. Recuerda usar una contraseña segura.</p>
+<p class="image-container"><img alt="cluster-user" src="img\\5ec28e4d3dfc2e59.png"></p>
+<p>Luego tendremos varias opciones de conexión, pero ya que utilizaremos <code>Mongoose</code>, vamos a conectarnos a través de la opción que dice <code>Drivers</code>.</p>
+<p class="image-container"><img alt="cluster-driver" src="img\\1ca5e5c8e9cfe56b.png"></p>
+<p>En el último paso, seleccionamos la versión del driver, que en nuestro caso será Node.js, y tendremos disponible la URL de conexión para usarla en nuestro código.</p>
+<p class="image-container"><img alt="cluster-url" src="img\\598c46e742494bd6.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bloque 3 - Instalación y Configuración de Express y Mongoose" duration="20">
+        <p>Ahora volvamos a VS Code y vamos a instalar los paquetes necesarios para comenzar con el desarrollo de nuestra API. Necesitaremos instalar <code>Express</code> para crear nuestras rutas, <code>Mongoose</code> realizar la conexión con la base de datos alojada en MongoDB Atlas, <code>dotenv</code> para manejar las variables de entorno y <code>cors</code> para configurar los origenes cruzados, además instalaremos un paquete que solo usaremos en desarrollo, este paquete es <code>nodemon</code> para que todos los cambios realizados se apliquen sin necesidad de reiniciar el servidor de node.</p>
+<p>Para la instalación ejecutaremos los siguientes comandos en la terminal:</p>
+<ul>
+<li><code>npm i express</code> para instalar express</li>
+<li><code>npm i mongoose</code> para instalar mongoose</li>
+<li><code>npm i dotenv</code> para manejar las variables de entorno</li>
+<li><code>npm i cors</code> para manejar origenes cruzados</li>
+<li><code>npm i nodemon -D</code> un paquete que solo usaremos en desarrollo</li>
+</ul>
+<p>Una vez instalados estos paquetes, se generará una carpeta nueva llamada <code>node_modules</code>, la cual almacena todas las dependencias de tu proyecto y un nuevo archivo llamado <code>package-lock.json</code>, el cual se genera automáticamente cuando se instalan paquetes o dependencias en el proyecto. Su finalidad es mantener un historial de los paquetes instalados y optimizar la forma en que se generan las dependencias del proyecto y los contenidos de la carpeta node_modules/.</p>
+<p class="image-container"><img alt="vscode-i" src="img\\aa76b48818aba62b.png"></p>
+<p>Además de esto, tambien hay un cambio en el archivo <code>package.json</code>, se agregaron 2 nuevos bloques las <code>dependencies</code> que muestras los paquetes de producción que instalamos y las <code>devDependencies</code> que muestra los paquetes que se usarán solo en desarrollo:</p>
+<pre><code language="language-bash" class="language-bash">  &#34;dependencies&#34;: {
+    &#34;cors&#34;: &#34;^2.8.5&#34;,
+    &#34;dotenv&#34;: &#34;^16.4.5&#34;,
+    &#34;express&#34;: &#34;^4.19.2&#34;,
+    &#34;mongoose&#34;: &#34;^8.3.5&#34;
+  },
+  &#34;devDependencies&#34;: {
+    &#34;nodemon&#34;: &#34;^3.1.0&#34;
+  }
+</code></pre>
+<h3 is-upgraded>Comenzamos a crear nuestra API</h3>
+<p>Ya tenemos todo listo para comenzar con nuestro código, así que vamos a crear nuestro archivo main, que en este caso será <code>index.js</code>, si quieres cambiar este nombre por <code>app.js</code> por ejemplo, deberías también cambiarlo en el <code>package.json</code> en el bloque de <code>main</code>. Una vez creado el <code>index.js</code> en la carpeta raíz, lo abrimos y vamos a importar todas las dependencias necesarias.</p>
+<pre><code language="language-bash" class="language-bash">  const express = require(&#34;express&#34;);
+  const cors = require(&#34;cors&#34;);
+  const mongoose = require(&#34;mongoose&#34;);
+  require(&#34;dotenv&#34;).config();
+</code></pre>
+<p>El siguiente paso será guardar una instancia de express, configurar los cors, usar un middleware que lee los datos Json y los convierte en un objeto de JavaScript para usarlo mucho más fácil, todo esto mediante los métodos que nos brinda express.</p>
+<pre><code language="language-bash" class="language-bash">  const app = express();
+  app.use(cors());
+  app.use(express.json())
+</code></pre>
+<p>Ya tenemos listo para comenzar a hacer la conexión a nuestra base de datos en mongoDB Atlas</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bloque 4 - Conexión a la base de datos y variables de entorno" duration="15">
+        <p>En esta parte ya podemos hacer la conexión con la base de datos que creamos en <code>MongoDB Atlas</code>. Primero que todo, vamos a necesitar crear una variable de entorno para tener disponible la URL de enlace que obtuvimos en el bloque 2. Las variables de entorno son parámetros externos que pueden afectar el comportamiento de aplicaciones y sistemas, sin necesidad de modificar el código fuente. En el contexto de Node.js, son cruciales para la seguridad, ya que permiten almacenar información sensible, como contraseñas y claves de API, fuera del código. Esto reduce el riesgo de exposición accidental en repositorios de código y facilita la gestión de configuraciones en diferentes entornos (desarrollo, prueba, producción).</p>
+<p>Para ello crearemos un archivo <code>.env</code> en la raíz de nuestro proyecto. Un ejemplo del contenido de este archivo será el siguiente:</p>
+<pre><code language="language-bash" class="language-bash">  MONGODB_URI = mongodb+srv://username:&lt;password&gt;@cluster0.c9p8mzk.mongodb.net/?retryWrites=true&amp;w=majority&amp;appName=Cluster0
+</code></pre>
+<p>En este ejemplo, <code>MONGO_URI</code> es el nombre de mi variable de entorno y el valor asignado es la cadena de conexión que nos provee MongoDB Atlas. Aquí debes reemplazar el texto que dice <code>username</code> y <code><password></code> por los datos del usuario y contraseña que se creó en MondoDB Atlas.</p>
+<h2 is-upgraded>Uso de la variable de entorno en el archivo index.js</h2>
+<p>Ahora vamos a usar la variable de conexión, así que creamos una constante para traer la cadena de conexión desde el archivo <code>.env</code>.</p>
+<pre><code language="language-bash" class="language-bash">  const mongoUri = process.env.MONGODB_URI;
+</code></pre>
+<p>Aquí, a través de <code>procces.env.MONGODB_URI</code> accedemos a la variable y podemos usar la cadena de conexión.</p>
+<pre><code language="language-bash" class="language-bash">  try {
+  mongoose.connect(mongoUri);
+  console.log(&#34;Conectado a MongoDB&#34;);
+  } catch (error) {
+  console.error(&#34;Error de conexón&#34;, error);
+  }
+</code></pre>
+<p>Obtenemos una referencia a la conexión con la base de datos para usarla más tarde.</p>
+<pre><code language="language-bash" class="language-bash">  const db = mongoose.connection;
+</code></pre>
+<h2 is-upgraded>Creación de un esquema y modelo con mongoose</h2>
+<p>Una vez lista la conexión a la base de datos y antes de comenzar a crear las rutas, se debe crear un esquema y un modelo con mongoose. Primero se define un esquema para el modelo Libro. El esquema determina la estructura de los documentos en la colección de MongoDB, es como un plano, En este caso, cada libro tendrá un título y un autor, ambos de tipo String.</p>
+<pre><code language="language-bash" class="language-bash">  const libroSchema = new mongoose.Schema({
+    titulo: String,
+    autor: String,
+  });
+</code></pre>
+<p>Por último, creamos un modelo llamado <code>Libro</code> utilizando el esquema definido anteriormente. Con este modelo, puedes realizar operaciones CRUD sobre la colección de libros en la base de datos. Mongoose creará o utilizará una colección llamada <code>libros</code> (versión pluralizada del nombre del modelo) en la base de datos.</p>
+<pre><code language="language-bash" class="language-bash">  const Libro = mongoose.model(&#34;Libro&#34;, libroSchema);
+</code></pre>
+<p>Ahora pasaremos a crear las rutas para las peticiones.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bloque 5 - Rutas (CRUD)" duration="15">
+        <p>Ya tenemos todo listo para crear las rutas de nuestra API con la ayuda de Express.</p>
+<h2 is-upgraded>Ruta raíz</h2>
+<p>Comenzamos con la ruta raíz <code>"/"</code>, la cual agregamos igualmente en nuestro archivo principal <code>index.js</code></p>
+<pre><code language="language-bash" class="language-bash">  app.get(&#34;/&#34;, (req, res) =&gt; {
+    res.send(&#34;Bienvenido a la tienda de libros&#34;);
+  });
+</code></pre>
+<p>Para probar esta ruta vamos a levantar el servidor de Node con el siguiente código:</p>
+<pre><code language="language-bash" class="language-bash">  app.listen(PORT, () =&gt; {
+    console.log(&#34;Servidor ejecutándose en http://localhost:3000/&#34;);
+  });
+</code></pre>
+<p>Para ello, vamos a configurar un script para que se levante el servidor, pero a través de <code>nodemon</code>, esto nos servirá para que cada vez que se haga un cambio en el código, el servidor sea reiniciado automáticamente y tome dichos cambios. Agregamos el script al <code>package.json</code> y nos quedará de la siguiente forma:</p>
+<pre><code language="language-bash" class="language-bash">{
+  &#34;name&#34;: &#34;nombre del proyecto&#34;,
+  &#34;version&#34;: &#34;1.0.0&#34;,
+  &#34;description&#34;: &#34;&#34;,
+  &#34;main&#34;: &#34;index.js&#34;,
+  &#34;scripts&#34;: {
+    &#34;start&#34;: &#34;nodemon index.js&#34;
+  },
+  &#34;keywords&#34;: [],
+  &#34;author&#34;: &#34;&#34;,
+  &#34;license&#34;: &#34;ISC&#34;
+}
+</code></pre>
+<p>Con esto podemos ir a la terminal y ejecutar <code>npm start</code>, lo que levanta el servidor y deberíamos ver en el terminal el siguiente mensaje:</p>
+<p class="image-container"><img alt="terminal-start" src="img\\bd302756cf6ded30.png"></p>
+<p>Y si visitamos en nuestro navegador la ruta <code>http://localhost:3000/</code> deberíamos tener el mensaje <code>Bienvenido a la tienda de libros</code>, con lo que confirmamos que nuestra primera ruta <code>/</code> está funcionando. Lo siguiente es crear las demás rutas del CRUD</p>
+<h2 is-upgraded>Ruta para crear un nuevo libro</h2>
+<p>En esta ruta construimos un nuevo libro con la ayuda del modelo creado con mongoose, tomamos los datos que vienen en la petición y usamos el método <code>save</code> para guardar el nuevo libro en la base de datos.</p>
+<pre><code language="language-bash" class="language-bash">  app.post(&#34;/libros&#34;, async (req, res) =&gt; {
+    const libro = new Libro({
+      titulo: req.body.titulo,
+      autor: req.body.autor,
+    });
+
+    try {
+      await libro.save();
+      res.json(libro);
+    } catch (error) {
+      res.status(500).send(&#34;Error al guardar libro&#34;);
+    }
+  });
+</code></pre>
+<h2 is-upgraded>Ruta para pedir todos los libros</h2>
+<p>Usando el método <code>find</code> en nuestro modelo Libro podemos traer el listado de todos los libros creados en la base de datos.</p>
+<pre><code language="language-bash" class="language-bash">  app.get(&#34;/libros&#34;, async (req, res) =&gt; {
+    try {
+      const libros = await Libro.find();
+      res.json(libros);
+    } catch (error) {
+      res.status(500).send(&#34;Error al obtener libros&#34;);
+    }
+  });
+</code></pre>
+<h2 is-upgraded>Ruta para obtener un libro específico por su ID</h2>
+<p>Usando el método <code>findById</code> podemos traer un libro por su ID.</p>
+<pre><code language="language-bash" class="language-bash">  app.get(&#34;/libros/:id&#34;, async (req, res) =&gt; {
+    try {
+      const libro = await Libro.findById(req.params.id);
+      if (libro) {
+        res.json(libro);
+      } else {
+        res.status(404).send(&#34;Libro no encontrado&#34;);
+      }
+    } catch (error) {
+      res.status(500).send(&#34;Error al buscar el libro&#34;);
+    }
+  });
+</code></pre>
+<h2 is-upgraded>Ruta para actualizar un libro específico por su ID</h2>
+<p>Usando el método <code>findByIDAndUpdate</code> podemos actualizar un libro por su ID</p>
+<pre><code language="language-bash" class="language-bash">  app.put(&#34;/libros/:id&#34;, async (req, res) =&gt; {
+    try {
+      const libro = await Libro.findByIdAndUpdate(
+        req.params.id,
+        {
+          titulo: req.body.titulo,
+          autor: req.body.autor,
+        },
+        { new: true } // Esta opción hará que se devuelva el documento actualizado
+      );
+
+      if (libro) {
+        res.json(libro);
+      } else {
+        res.status(404).send(&#34;Libro no encontrado&#34;);
+      }
+    } catch (error) {
+      res.status(500).send(&#34;Error al actualizar el libro&#34;);
+    }
+  });
+</code></pre>
+<h2 is-upgraded>Ruta para eliminar un libro específico por su ID</h2>
+<p>Por último, para este ejemplo, mediante el método <code>findByIdAndDelete</code> podemos eliminar un libro de nuestra base de datos por su ID.</p>
+<pre><code language="language-bash" class="language-bash">  app.delete(&#34;/libros/:id&#34;, async (req, res) =&gt; {
+    try {
+      const libro = await Libro.findByIdAndRemove(req.params.id);
+      if (libro) {
+        res.status(204).send();
+      } else {
+        res.status(404).send(&#34;Libro no encontrado&#34;);
+      }
+    } catch (error) {
+      res.status(500).send(&#34;Error al eliminar el libro&#34;);
+    }
+  });
+</code></pre>
+<p>Con esto ya tendríamos todas las rutas necesarias para nuestro ejemplo de un CRUD de libros, si quieres ver todos los métodos que nos brinda mongoose puedes ir a su documentación en el siguiente enlace <a href="https://mongoosejs.com/docs/" target="_blank">mongoose</a>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bloque 6 - Probar nuestras rutas con Postman" duration="15">
+        <p>Para terminar vamos a usar una herramienta que nos sera muy util a la hora de probar las rutas de nuestra API. Postman es una herramienta de pruebas y desarrollo de API que permite a los desarrolladores enviar peticiones a servicios web y ver respuestas. Postman está diseñado para enviar solicitudes desde el lado del cliente al servidor web y recibir una respuesta del back-end. Para descargar esta herramienta puedes descargarla desde el siguiente enlace <a href="https://www.postman.com/downloads/" target="_blank">postman</a>.</p>
+<p>Una vez instalado podremos lanzar peticiones a nuestro servidor, por ejemplo una petición <code>POST</code> para crear un nuevo libro.</p>
+<ul>
+<li><ol type="1">
+<li>Seleccionamos el tipo de petición</li>
+</ol>
+</li>
+</ul>
+<p class="image-container"><img alt="peticion-post" src="img\\3b1ae178005059c9.png"></p>
+<ul>
+<li><ol type="1" start="2">
+<li>Agregamos la ruta para la petición, que en nuestro caso es <code>http://localhost:3000/libros</code></li>
+</ol>
+</li>
+</ul>
+<p class="image-container"><img alt="peticion-ruta" src="img\\d54da6361e8ba9e6.png"></p>
+<ul>
+<li><ol type="1" start="3">
+<li>Y al ser una petición tipo post donde vamos a crear un nuevo libro, debemos agregar el cuerpo de la petición, asi que vamos a la opción <code>body</code>, seleccionamos <code>raw</code> y aquí seleccionamos <code>JSON</code>, para agregar los datos que vamos a enviar en formato json.</li>
+</ol>
+</li>
+</ul>
+<p class="image-container"><img alt="peticion-body" src="img\\6cf1ee286f1c6bd5.png"></p>
+<ul>
+<li><ol type="1" start="4">
+<li>Por último hacemos clic en el boton <code>Send</code> y deberiamos recibir una respuesta con la información del libro creado en la base de datos de mongo.</li>
+</ol>
+</li>
+</ul>
+<p class="image-container"><img alt="peticion-respuesta" src="img\\44aba63c0941ff28.png"></p>
+<p>De la misma manera puedes probar el resto de rutas, y al final tendras tu primer API creada y funcional.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
