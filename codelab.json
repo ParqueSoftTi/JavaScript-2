@@ -1,0 +1,17 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2024-05-17T16:45:18-05:00",
+  "id": "node-express-mongo",
+  "duration": 100,
+  "title": "Codelab: Como crear tu primera API con Node, Express y Mongo",
+  "summary": "Crea una API con Node, Express y Mongo",
+  "source": "JavaScript-2-node-express-mongo.md",
+  "theme": "",
+  "status": null,
+  "category": null,
+  "tags": [],
+  "url": "node-express-mongo"
+}
